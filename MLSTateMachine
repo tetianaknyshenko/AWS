@@ -1,0 +1,14 @@
+{
+  "Comment": "A description of my state machine",
+  "StartAt": "Init",
+  "States": {
+    "Init":{
+      "Type": "Pass",
+      "Next":"End"
+  },
+      "End": {
+  "Type": "Succeed"
+    
+    }
+  }
+}
