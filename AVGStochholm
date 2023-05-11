@@ -1,0 +1,45 @@
+import boto3
+
+print('Loading function')
+
+s3 = boto3.client('s3')
+
+def lambda_handler(event, context):
+    # Get the object from the event and show its content type
+    bucket = "ml-engineer-course-tk"
+    key = "simple_regression_.csv" 
+    
+    try:
+        object = s3.get_object(Bucket=bucket, Key=key)
+        print(object)
+        content = object['Body'].read().decode("utf-8")
+        print(content)
+        content = content.split("\n")
+        print(content)
+        
+        content = parse_content(content)
+        
+        total_id = sum_id(content)
+        
+        upload_data(bucket, "results_sum.txt", total_id)
+        
+        return object['ContentType']
+    except Exception as e:
+        print(e)
+        print('Error getting object {} from bucket {}. Make sure they exist and your bucket is in the same region as this function.'.format(key, bucket))
+        raise e
+
+def parse_content(content):
+    print('parse_content')
+    return  [{"SAT":i.split(";")[0], "GPA":i.split(";")[1]} for i in content]
+    
+def sum_id(items):
+    sum = 0
+    for i in items:
+        sum = sum + int(i["SAT"])
+    return sum
+
+
+def upload_data(bucket, filename, content):
+    binary_data = str.encode(str(content))
+    s3.put_object(Body=binary_data, Bucket=bucket, Key=filename)
