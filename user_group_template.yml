@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Template to create necessary groups and users'
+Resources:
+  JohnW:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: 'JohnWurstermann'
+  QaGroup:
+    Type: AWS::IAM::Group
+    Properties:
+      GroupName: 'QAGroup'
+      ManagedPolicyArns: ['arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess']
+  UsersInQaGroup:
+    Type: AWS::IAM::UserToGroupAddition
+    Properties:
+      GroupName: !Ref 'QaGroup'
+      Users: [!Ref 'JohnW']
